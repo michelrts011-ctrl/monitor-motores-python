@@ -224,5 +224,6 @@ __marimo__/
 
 #Minhas Senhas
 .env
+.env.example
 .log
 dados_sensiveis/
