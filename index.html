@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monitoramento de Motores Industriais | v1.0.0</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topo">
+    <div class="container">
+      <span class="badge">Sistema Industrial • v1.0.0</span>
+      <h1>Monitoramento de Motores Industriais</h1>
+      <p class="subtitulo">
+        Solução em Python para validação de telemetria, deteção de anomalias operacionais,
+        cálculo de estatísticas e geração de plano de manutenção preventiva.
+      </p>
+      <div class="acoes">
+        <a href="https://github.com/michelrts011-ctrl/monitor-motores-python" target="_blank" rel="noopener noreferrer" class="btn-primario">
+          Acessar Repositório no GitHub
+        </a>
+        <a href="#codigo" class="btn-secundario">Ver Código-Fonte</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 1. Explicação Técnica -->
+    <section id="explicacao" class="card">
+      <h2>1. Explicação Técnica do Sistema</h2>
+      <p>
+        O sistema <code>monitor_industrial.py</code> processa leituras de sensores instalados em motores
+        elétricos de diferentes setores fabris (Estamparia, Usinagem, Bobinagem e Pintura). O fluxo de
+        execução é dividido em etapas modulares:
+      </p>
+      <div class="grid-etapas">
+        <div class="etapa">
+          <h3>1. Validação de Dados</h3>
+          <p>
+            A função <code>validar_leitura()</code> verifica a presença de todos os campos obrigatórios
+            (<code>id</code>, <code>setor</code>, <code>temperatura</code>, <code>corrente</code>,
+            <code>vibracao</code>, <code>rpm</code>, <code>potencia_kw</code>) e descarta valores nulos ou negativos.
+          </p>
+        </div>
+        <div class="etapa">
+          <h3>2. Análise de Alertas</h3>
+          <p>
+            A função <code>analisar_alertas()</code> compara cada leitura com os limites operacionais e
+            classifica o estado do equipamento em <strong>NORMAL</strong> (0 alertas),
+            <strong>ATENÇÃO</strong> (1 alerta) ou <strong>CRÍTICO</strong> (2 ou mais alertas).
+          </p>
+        </div>
+        <div class="etapa">
+          <h3>3. Estatísticas Gerais</h3>
+          <p>
+            A função <code>calcular_estatisticas()</code> consolida o total de motores ativos, temperatura
+            média, corrente média, potência instalada total (kW) e identifica o motor mais quente.
+          </p>
+        </div>
+        <div class="etapa">
+          <h3>4. Painel e Manutenção</h3>
+          <p>
+            As funções <code>exibir_painel()</code> e <code>gerar_plano_manutencao()</code> apresentam o
+            diagnóstico em tempo real no terminal e organizam a fila de parada imediata ou inspeção programada.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Parâmetros Monitorados -->
+    <section id="parametros" class="card">
+      <h2>2. Parâmetros e Limites Monitorados</h2>
+      <p>
+        Valores de referência configurados no dicionário <code>LIMITES</code> para disparo automático de alertas:
+      </p>
+      <div class="tabela-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Parâmetro</th>
+              <th>Chave no Código</th>
+              <th>Limite Operacional</th>
+              <th>Unidade</th>
+              <th>Alerta Gerado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Temperatura Máxima</td>
+              <td><code>temperatura_max</code></td>
+              <td>80.0</td>
+              <td>°C</td>
+              <td>Superaquecimento</td>
+            </tr>
+            <tr>
+              <td>Corrente Máxima</td>
+              <td><code>corrente_max</code></td>
+              <td>18.5</td>
+              <td>A</td>
+              <td>Sobrecorrente</td>
+            </tr>
+            <tr>
+              <td>Vibração Máxima</td>
+              <td><code>vibracao_max</code></td>
+              <td>4.5</td>
+              <td>mm/s</td>
+              <td>Vibração elevada</td>
+            </tr>
+            <tr>
+              <td>Rotação Mínima</td>
+              <td><code>rpm_min</code></td>
+              <td>1400</td>
+              <td>RPM</td>
+              <td>Rotação fora da faixa</td>
+            </tr>
+            <tr>
+              <td>Rotação Máxima</td>
+              <td><code>rpm_max</code></td>
+              <td>1800</td>
+              <td>RPM</td>
+              <td>Rotação fora da faixa</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Amostra de Leituras e Diagnóstico</h3>
+      <div class="tabela-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Setor</th>
+              <th>Temp. (°C)</th>
+              <th>Corrente (A)</th>
+              <th>Vibração (mm/s)</th>
+              <th>RPM</th>
+              <th>Potência (kW)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>MTR-01</strong></td>
+              <td>Estamparia</td>
+              <td>68.4</td>
+              <td>14.2</td>
+              <td>2.1</td>
+              <td>1750</td>
+              <td>7.5</td>
+              <td><span class="status normal">NORMAL</span></td>
+            </tr>
+            <tr>
+              <td><strong>MTR-02</strong></td>
+              <td>Usinagem</td>
+              <td>84.7</td>
+              <td>19.3</td>
+              <td>5.2</td>
+              <td>1690</td>
+              <td>11.0</td>
+              <td><span class="status critico">CRÍTICO</span></td>
+            </tr>
+            <tr>
+              <td><strong>MTR-03</strong></td>
+              <td>Bobinagem</td>
+              <td>76.2</td>
+              <td>17.8</td>
+              <td>4.7</td>
+              <td>1520</td>
+              <td>5.5</td>
+              <td><span class="status atencao">ATENÇÃO</span></td>
+            </tr>
+            <tr>
+              <td><strong>MTR-04</strong></td>
+              <td>Pintura</td>
+              <td>61.0</td>
+              <td>11.5</td>
+              <td>1.8</td>
+              <td>1780</td>
+              <td>7.5</td>
+              <td><span class="status normal">NORMAL</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. Código-Fonte Python -->
+    <section id="codigo" class="card">
+      <div class="codigo-header">
+        <h2>3. Código-Fonte Python (<code>monitor_industrial.py</code>)</h2>
+        <span class="tag-lang">Python 3</span>
+      </div>
+      <pre><code>from datetime import datetime
+
+SISTEMA_NOME = "Monitoramento de Motores Industriais"
+VERSAO = "1.0.0"
+
+LIMITES = {
+    "temperatura_max": 80.0,
+    "corrente_max": 18.5,
+    "vibracao_max": 4.5,
+    "rpm_min": 1400,
+    "rpm_max": 1800,
+}
+
+LEITURAS_MOTORES = [
+    {"id": "MTR-01", "setor": "Estamparia", "temperatura": 68.4, "corrente": 14.2, "vibracao": 2.1, "rpm": 1750, "potencia_kw": 7.5},
+    {"id": "MTR-02", "setor": "Usinagem", "temperatura": 84.7, "corrente": 19.3, "vibracao": 5.2, "rpm": 1690, "potencia_kw": 11.0},
+    {"id": "MTR-03", "setor": "Bobinagem", "temperatura": 76.2, "corrente": 17.8, "vibracao": 4.7, "rpm": 1520, "potencia_kw": 5.5},
+    {"id": "MTR-04", "setor": "Pintura", "temperatura": 61.0, "corrente": 11.5, "vibracao": 1.8, "rpm": 1780, "potencia_kw": 7.5},
+]
+
+
+def validar_leitura(motor):
+    campos_obrigatorios = ["id", "setor", "temperatura", "corrente", "vibracao", "rpm", "potencia_kw"]
+    for campo in campos_obrigatorios:
+        if campo not in motor or motor[campo] is None:
+            return False
+    if motor["temperatura"] &lt; 0 or motor["corrente"] &lt; 0 or motor["vibracao"] &lt; 0 or motor["rpm"] &lt; 0:
+        return False
+    return True
+
+
+def obter_leituras_validas(lista_motores):
+    return [m for m in lista_motores if validar_leitura(m)]
+
+
+def analisar_alertas(motor):
+    alertas = []
+    if motor["temperatura"] &gt; LIMITES["temperatura_max"]:
+        alertas.append(f"Superaquecimento ({motor['temperatura']:.1f} C)")
+    if motor["corrente"] &gt; LIMITES["corrente_max"]:
+        alertas.append(f"Sobrecorrente ({motor['corrente']:.1f} A)")
+    if motor["vibracao"] &gt; LIMITES["vibracao_max"]:
+        alertas.append(f"Vibracao elevada ({motor['vibracao']:.1f} mm/s)")
+    if motor["rpm"] &lt; LIMITES["rpm_min"] or motor["rpm"] &gt; LIMITES["rpm_max"]:
+        alertas.append(f"Rotacao fora da faixa ({motor['rpm']} RPM)")
+
+    if len(alertas) == 0:
+        status = "NORMAL"
+    elif len(alertas) == 1:
+        status = "ATENCAO"
+    else:
+        status = "CRITICO"
+
+    return status, alertas
+
+
+def calcular_estatisticas(motores):
+    total = len(motores)
+    if total == 0:
+        return {}
+
+    temp_media = sum(m["temperatura"] for m in motores) / total
+    corrente_media = sum(m["corrente"] for m in motores) / total
+    potencia_total = sum(m["potencia_kw"] for m in motores)
+    maior_temp = max(motores, key=lambda m: m["temperatura"])
+
+    return {
+        "total_motores": total,
+        "temperatura_media": round(temp_media, 2),
+        "corrente_media": round(corrente_media, 2),
+        "potencia_total_kw": round(potencia_total, 2),
+        "motor_mais_quente": maior_temp["id"],
+    }
+
+
+def exibir_painel(motores):
+    print("=" * 64)
+    print(f"{SISTEMA_NOME} - v{VERSAO}")
+    print(f"Data/Hora da leitura: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+    print("=" * 64)
+
+    for motor in motores:
+        status, alertas = analisar_alertas(motor)
+        print(
+            f"[{status:&lt;7}] {motor['id']} ({motor['setor']}) | "
+            f"Temp: {motor['temperatura']} C | Corr: {motor['corrente']} A | "
+            f"Vib: {motor['vibracao']} mm/s | RPM: {motor['rpm']}"
+        )
+        for alerta in alertas:
+            print(f"  -&gt; Alerta: {alerta}")
+
+    stats = calcular_estatisticas(motores)
+    print("-" * 64)
+    print(
+        f"Resumo: {stats['total_motores']} motores | "
+        f"Temp. media: {stats['temperatura_media']} C | "
+        f"Corr. media: {stats['corrente_media']} A | "
+        f"Potencia total: {stats['potencia_total_kw']} kW | "
+        f"Maior temp.: {stats['motor_mais_quente']}"
+    )
+    print("=" * 64)
+
+
+def gerar_plano_manutencao(motores):
+    plano = {"CRITICO": [], "ATENCAO": [], "NORMAL": []}
+    for motor in motores:
+        status, alertas = analisar_alertas(motor)
+        plano[status].append({"id": motor["id"], "setor": motor["setor"], "ocorrencias": len(alertas)})
+    return plano
+
+
+def exibir_manutencao(motores):
+    plano = gerar_plano_manutencao(motores)
+    print("\nPLANO DE MANUTENCAO PREVENTIVA:")
+    print(f" - Parada imediata (CRITICO): {[m['id'] for m in plano['CRITICO']]}")
+    print(f" - Inspecao programada (ATENCAO): {[m['id'] for m in plano['ATENCAO']]}")
+    print(f" - Operacao estavel (NORMAL): {[m['id'] for m in plano['NORMAL']]}")
+
+
+if __name__ == "__main__":
+    motores_validos = obter_leituras_validas(LEITURAS_MOTORES)
+    exibir_painel(motores_validos)
+    exibir_manutencao(motores_validos)</code></pre>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <div class="container">
+      <p>Projeto desenvolvido para avaliação prática • Publicado via GitHub Pages</p>
+      <a href="https://github.com/michelrts011-ctrl/monitor-motores-python" target="_blank" rel="noopener noreferrer">
+        github.com/michelrts011-ctrl/monitor-motores-python
+      </a>
+    </div>
+  </footer>
+</body>
+</html>
