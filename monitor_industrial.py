@@ -18,3 +18,15 @@ LEITURAS_MOTORES = [
     {"id": "MTR-04", "setor": "Pintura", "temperatura": 61.0, "corrente": 11.5, "vibracao": 1.8, "rpm": 1780, "potencia_kw": 7.5},
 ]
 
+def validar_leitura(motor):
+    campos_obrigatorios = ["id", "setor", "temperatura", "corrente", "vibracao", "rpm", "potencia_kw"]
+    for campo in campos_obrigatorios:
+        if campo not in motor or motor[campo] is None:
+            return False
+    if motor["temperatura"] < 0 or motor["corrente"] < 0 or motor["vibracao"] < 0 or motor["rpm"] < 0:
+        return False
+    return True
+
+
+def obter_leituras_validas(lista_motores):
+    return [m for m in lista_motores if validar_leitura(m)]
